@@ -7,7 +7,7 @@ namespace FileIndexer
 {
     class Program
     {
-        private static readonly string[] _helpCommands = new[] {"-h", "-help", "?"};
+        private static readonly string[] HelpCommands = new[] {"-h", "-help", "?"};
 
         static void Main(string[] args)
         {
@@ -48,7 +48,7 @@ namespace FileIndexer
 
         private static void PrintHelp()
         {
-            var help =
+            const string help =
 @" ---------------- Main function -------------------- 
 path to file        this command open specified file 
                     for query lines and words    
@@ -103,7 +103,7 @@ path to file        this command open specified file
             switch (args.Length)
             {
                 case 1:
-                    if (_helpCommands.Any(x => x.Equals(args[0], StringComparison.OrdinalIgnoreCase)))
+                    if (HelpCommands.Any(x => x.Equals(args[0], StringComparison.OrdinalIgnoreCase)))
                     {
                         return new Parameters {IsHelpMode = true};
                     }
@@ -112,8 +112,8 @@ path to file        this command open specified file
                     if (!File.Exists(filePath))
                         throw new ArgumentException("Given file is not exists", "args");
                     return new Parameters {FilePath = filePath};
-                case 2:
-                    switch (args[3])
+                case 3:
+                    switch (args[0])
                     {
                         case "-generate-test-file":
                             var parameters = new Parameters();
@@ -137,7 +137,7 @@ path to file        this command open specified file
                 Console.ResetColor();
             }
 
-            Console.WriteLine("Use parameter key {0} for help.", string.Join(", ", _helpCommands));
+            Console.WriteLine("Use parameter key {0} for help.", string.Join(", ", HelpCommands));
         }
     }
 }
