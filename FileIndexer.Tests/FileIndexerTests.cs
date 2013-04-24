@@ -25,7 +25,7 @@ namespace FileIndexer.Tests
             const string text = "";
             using (var stream = CreateStreamFromText(text))
             {
-                var index = _indexBuilder.BuildFromStream(stream, IndexBuilder.DefaultEncoding);
+                var index = _indexBuilder.BuildFromStream(stream, FixedParameters.Encoding);
 
                 index.Lines.Should().BeEmpty();
             }
@@ -37,7 +37,7 @@ namespace FileIndexer.Tests
             const string text = "sdfhsjdkfhsjkdfhskdjh fksjdfhks djfhksdfh sd";
             using (var stream = CreateStreamFromText(text))
             {
-                var index = _indexBuilder.BuildFromStream(stream, IndexBuilder.DefaultEncoding);
+                var index = _indexBuilder.BuildFromStream(stream, FixedParameters.Encoding);
 
                 index.Lines.Should().HaveCount(1);
                 index.Lines.First().Range.Length.Should().Be(text.Length);
@@ -52,7 +52,7 @@ namespace FileIndexer.Tests
             {
                 var expectedLineLength = text.TrimEnd(Environment.NewLine.ToCharArray()).Length;
                 
-                var index = _indexBuilder.BuildFromStream(stream, IndexBuilder.DefaultEncoding);
+                var index = _indexBuilder.BuildFromStream(stream, FixedParameters.Encoding);
 
                 index.Lines.Should().HaveCount(1);
                 index.Lines.First().Range.Length.Should().Be(expectedLineLength);
@@ -74,7 +74,7 @@ namespace FileIndexer.Tests
 
             using (var stream = CreateStreamFromText(text))
             {
-                var index = _indexBuilder.BuildFromStream(stream, IndexBuilder.DefaultEncoding);
+                var index = _indexBuilder.BuildFromStream(stream, FixedParameters.Encoding);
 
                 index.Lines.Should().HaveSameCount(lines);
                 for (int i = 0; i < lines.Length; i++)
@@ -98,7 +98,7 @@ namespace FileIndexer.Tests
 
             using (var stream = CreateStreamFromText(text))
             {
-                var index = _indexBuilder.BuildFromStream(stream, IndexBuilder.DefaultEncoding);
+                var index = _indexBuilder.BuildFromStream(stream, FixedParameters.Encoding);
 
                 var line1 = index.Lines.ElementAt(0);
                 var line2 = index.Lines.ElementAt(1);
@@ -137,7 +137,7 @@ namespace FileIndexer.Tests
 
         private static MemoryStream CreateStreamFromText(string text)
         {
-            return new MemoryStream(IndexBuilder.DefaultEncoding.GetBytes(text));
+            return new MemoryStream(FixedParameters.Encoding.GetBytes(text));
         }
     }
 }

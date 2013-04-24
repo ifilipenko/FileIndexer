@@ -8,11 +8,6 @@ namespace FileIndexer
 {
     public class IndexBuilder
     {
-        public static Encoding DefaultEncoding
-        {
-            get { return Encoding.ASCII; }
-        }
-
         private readonly int _readBufferSize;
 
         public IndexBuilder(int readBufferSize = 4096)
@@ -33,7 +28,7 @@ namespace FileIndexer
             {
                 var lineStart = 0L;
                 var lineEnd = -1L;
-                var wordStart = -1l;
+                var wordStart = -1L;
 
                 var line = new Line(lineStart);
                 foreach (var buffer in ReadPortion(binaryReader))

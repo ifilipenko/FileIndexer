@@ -27,7 +27,7 @@ namespace FileIndexer
                 }
 
                 var lineIndex     = GetLineIndex(parameters);
-                var stringSource  = new FileSource(parameters.FilePath);
+                var stringSource  = new FileSource(parameters.FilePath, FixedParameters.Encoding);
                 var commandParser = new CommandParser();
 
                 while (true)
@@ -84,7 +84,7 @@ path to file        this command open specified file
                 stopwatch.Start();
                 using (var stream = File.OpenRead(parameters.FilePath))
                 {
-                    lineIndex = indexBuilder.BuildFromStream(stream, IndexBuilder.DefaultEncoding);
+                    lineIndex = indexBuilder.BuildFromStream(stream, FixedParameters.Encoding);
                 }
                 stopwatch.Stop();
 

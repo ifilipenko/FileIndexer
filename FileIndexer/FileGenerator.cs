@@ -39,7 +39,7 @@ namespace FileIndexer
         private void GenerateBigFileWithOneBigWord(string filePath)
         {
             using (var stream = File.OpenWrite(filePath))
-            using (var writer = new BinaryWriter(stream, IndexBuilder.DefaultEncoding))
+            using (var writer = new BinaryWriter(stream, FixedParameters.Encoding))
             {
                 WriteBigWord(writer, 25 * Volumes.Gigabyte);
             }
@@ -48,7 +48,7 @@ namespace FileIndexer
         private void GenerateBigFileWithOneLine(string filePath)
         {
             using (var stream = File.OpenWrite(filePath))
-            using (var writer = new BinaryWriter(stream, IndexBuilder.DefaultEncoding))
+            using (var writer = new BinaryWriter(stream, FixedParameters.Encoding))
             {
                 WriteBigLine(writer, 25 * Volumes.Gigabyte);
             }
@@ -57,7 +57,7 @@ namespace FileIndexer
         private void GenerateBigFileWithManyLine(string filePath)
         {
             using (var stream = File.OpenWrite(filePath))
-            using (var writer = new BinaryWriter(stream, IndexBuilder.DefaultEncoding))
+            using (var writer = new BinaryWriter(stream, FixedParameters.Encoding))
             {
                 WriteLine(writer, 512);
                 WriteBigWord(writer, 10 * Volumes.Gigabyte);
