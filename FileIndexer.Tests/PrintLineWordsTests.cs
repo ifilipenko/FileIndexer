@@ -7,7 +7,6 @@ namespace FileIndexer.Tests
     [TestFixture]
     public class PrintLineWordsTests
     {
-        const int Kilobyte = 1024;
         private LineIndex _index;
         private IStringsSource _stringsSource;
 
@@ -57,7 +56,7 @@ namespace FileIndexer.Tests
 
             command.Execute(_index, _stringsSource);
 
-            _stringsSource.Received(1).ReadString(27, Kilobyte - 1 + 27);
+            _stringsSource.Received(1).ReadString(27, Volumes.Kilobyte - 1 + 27);
         }
 
         [Test]
