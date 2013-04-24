@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="CommandParser.cs" />
     <Compile Include="ExitCommand.cs" />
+    <Compile Include="FileGenerator.cs" />
+    <Compile Include="GeneratorMethod.cs" />
     <Compile Include="IIndexCache.cs" />
     <Compile Include="IndexBuilder.cs" />
     <Compile Include="FileSource.cs" />

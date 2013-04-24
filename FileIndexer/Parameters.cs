@@ -1,12 +1,19 @@
-﻿namespace FileIndexer
+﻿using System;
+
+namespace FileIndexer
 {
     public class Parameters
     {
-        public Parameters(string filePath)
-        {
-            FilePath = filePath;
-        }
+        public string FilePath { get; set; }
+        public bool IsGeneratorMode { get; set; }
+        public GeneratorMethod GeneratorMethod { get; private set; }
+        public bool IsHelpMode { get; set; }
 
-        public string FilePath { get; private set; }
+        public void SetGeneratorParameters(string mode, string generatedFileName)
+        {
+            IsGeneratorMode = true;
+            FilePath = generatedFileName;
+            GeneratorMethod = (GeneratorMethod) Enum.Parse(typeof (GeneratorMethod), mode, true);
+        }
     }
 }

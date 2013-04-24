@@ -1,16 +1,31 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace FileIndexer
 {
     class Program
     {
+        private static readonly string[] _helpCommands = new[] {"-h", "-help", "?"};
+
         static void Main(string[] args)
         {
             try
             {
-                var parameters    = ProcessParameters(args);
+                var parameters = ParseParameters(args);
+                if (parameters.IsHelpMode)
+                {
+                    PrintHelp();
+                    return;
+                }
+                if (parameters.IsGeneratorMode)
+                {
+                    var fileGenerator = new FileGenerator(parameters.GeneratorMethod);
+                    fileGenerator.GenerateFile(parameters.FilePath);
+                    return;
+                }
+
                 var lineIndex     = GetLineIndex(parameters);
                 var stringSource  = new FileSource(parameters.FilePath);
                 var commandParser = new CommandParser();
@@ -29,6 +44,29 @@ namespace FileIndexer
             {
                 PrintException(ex);
             }
+        }
+
+        private static void PrintHelp()
+        {
+            var help =
+@" ---------------- Main function -------------------- 
+path to file        this command open specified file 
+                    for query lines and words    
+
+ ---------------- Test file generator ---------------- 
+-generate-test-file mode path    this command generate test file
+    mode     this parameter have folowing values:
+        BigFileWithOneBigWord  25 Gb file with one big line and 
+                               one big word without whitespaces
+        BigFileWithOneLine     25 Gb file with one big line and 
+                               many random words (limit of word len is 10 Gb)
+        BigFileWithManyLine    25 Gb file with many lines and 
+                               many random words (limit of word len is 10 Gb)
+        EmptyFile              file with empty text
+        ManyLinesWithoutWords  file with 100 lines with 
+                            whiltespaces only
+    path      path to generated file";
+            Console.WriteLine(help);
         }
 
         private static LineIndex GetLineIndex(Parameters parameters)
@@ -60,16 +98,31 @@ namespace FileIndexer
             return lineIndex;
         }
 
-        private static Parameters ProcessParameters(string[] args)
+        private static Parameters ParseParameters(string[] args)
         {
-            if (args.Length != 1)
-                throw new ArgumentException("Expected 1 parameter but was " + args.Length, "args");
+            switch (args.Length)
+            {
+                case 1:
+                    if (_helpCommands.Any(x => x.Equals(args[0], StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return new Parameters {IsHelpMode = true};
+                    }
 
-            var filePath = args[0];
-            if (!File.Exists(filePath))
-                throw new ArgumentException("Given file is not exists", "args");
-
-            return new Parameters(filePath);
+                    var filePath = args[0];
+                    if (!File.Exists(filePath))
+                        throw new ArgumentException("Given file is not exists", "args");
+                    return new Parameters {FilePath = filePath};
+                case 2:
+                    switch (args[3])
+                    {
+                        case "-generate-test-file":
+                            var parameters = new Parameters();
+                            parameters.SetGeneratorParameters(args[1], args[2]);
+                            return parameters;
+                    }
+                    break;
+            }
+            throw new ArgumentException("Unexpected or incorrect parameters ", "args");
         }
 
         private static void PrintException(Exception exception)
@@ -84,7 +137,7 @@ namespace FileIndexer
                 Console.ResetColor();
             }
 
-            Console.WriteLine("Use parameter key -h, -help or ? for help.");
+            Console.WriteLine("Use parameter key {0} for help.", string.Join(", ", _helpCommands));
         }
     }
 }
