@@ -43,7 +43,7 @@ namespace FileIndexer
 
         private string GetCacheFilePath(string originalFilePath)
         {
-            return Path.Combine(_cachesLocation, Path.GetFileName(originalFilePath), ".cache");
+            return Path.Combine(_cachesLocation, Path.GetFileName(originalFilePath) + ".cache");
         }
     }
 }
