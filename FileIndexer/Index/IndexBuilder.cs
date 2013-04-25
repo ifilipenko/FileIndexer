@@ -1,17 +1,29 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FileIndexer.Index
 {
+    public enum ProcessingMode
+    {
+        Sequential,
+        Parallel
+    }
+
     public class IndexBuilder
     {
+        private readonly ProcessingMode _processingMode;
         private readonly int _readBufferSize;
 
-        public IndexBuilder(int readBufferSize = 4096)
+        public IndexBuilder(ProcessingMode processingMode, int readBufferSize = 4096)
         {
+            _processingMode = processingMode;
             _readBufferSize = readBufferSize;
         }
 
@@ -26,68 +38,119 @@ namespace FileIndexer.Index
 
             using (var binaryReader = new BinaryReader(stream, encoding))
             {
-                var lineStart = 0L;
-                var lineEnd = -1L;
-                var wordStart = -1L;
+                var tokens = MapTokens(binaryReader);
 
-                var line = new Line(lineStart);
-                foreach (var buffer in ReadPortion(binaryReader))
+                var totalBytes = binaryReader.BaseStream.Length;
+                ReduceTokensToIndex(tokens, totalBytes, lineIndex);
+            }
+
+            return lineIndex;
+        }
+
+        private IEnumerable<Token> MapTokens(BinaryReader binaryReader)
+        {
+            switch (_processingMode)
+            {
+                case ProcessingMode.Sequential:
+                    return ReadPortion(binaryReader).SelectMany(ReadTokensFromBuffer).ToList();
+                    break;
+                default:
+                    return ReadPortion(binaryReader).AsParallel()
+                                                    .SelectMany(ReadTokensFromBuffer)
+                                                    .ToList();
+
+                    //Parallel.ForEach(ReadPortion(binaryReader).ToList(), buffer => ReadTokensFromBuffer(buffer, tokens));
+                    break;
+            }
+        }
+
+        private static void ReduceTokensToIndex(IEnumerable<Token> tokens, long totalBytes, LineIndex lineIndex)
+        {
+            var line = new Line(0) {End = -1};
+            var lastWordStart = 0L;
+            foreach (var token in tokens.OrderBy(x => x.Range.Start))
+            {
+                if (lastWordStart < token.Range.Start)
                 {
-                    for (int i = 0; i < buffer.Chars.Length; i++)
-                    {
-                        if (buffer.Chars[i] == '\r')
-                        {
-                            lineEnd = i + buffer.Offset;
-                            line.End = Math.Max(0, lineEnd - 1);
-                            if (wordStart >= 0)
-                            {
-                                line.AddWord(wordStart, line.Range.End);
-                            }
-                            lineIndex.Add(line);
-                            if (i < buffer.Chars.Length - 1 && buffer.Chars[i + 1] == '\n')
-                            {
-                                i++;
-                            }
+                    line.AddWord(lastWordStart, token.Range.Start - 1);
+                }
 
-                            lineStart = i + 1 + buffer.Offset;
-                            line = new Line(lineStart);
-                            wordStart = -1;
-                        }
-                        else
+                if (token.IsNewline)
+                {
+                    line.End = token.Range.Start - 1;
+                    lineIndex.Add(line);
+                    line = new Line(token.Range.End + 1) {End = -1};
+                }
+                lastWordStart = token.Range.End + 1;
+            }
+
+            if (line.Start > line.End && line.Start < totalBytes)
+            {
+                var lastPosition = totalBytes - 1;
+                line.End = lastPosition;
+                if (lastWordStart < lastPosition)
+                {
+                    line.AddWord(lastWordStart, lastPosition);
+                }
+                lineIndex.Add(line);
+            }
+        }
+
+        private static IEnumerable<Token> ReadTokensFromBuffer(Buffer buffer)
+        {
+            var tokens = new List<Token>();
+            Token whiteSpaceToken = null;
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                var position = buffer.GetPositionIsStream(i);
+                if (buffer[i] == '\r')
+                {
+                    var lineEnd = position;
+                    var token = new Token {IsNewline = true};
+
+                    if (i < buffer.Length - 1 && buffer[i + 1] == '\n')
+                    {
+                        token.Range = new Range(lineEnd, lineEnd + 1);
+                        i++;
+                    }
+                    else
+                    {
+                        token.Range = new Range(lineEnd, lineEnd);
+                    }
+                    tokens.Add(token);
+                }
+                else
+                {
+                    if (char.IsWhiteSpace(buffer[i]))
+                    {
+                        if (whiteSpaceToken == null)
                         {
-                            if (char.IsWhiteSpace(buffer.Chars[i]))
-                            {
-                                if (wordStart >= 0)
+                            whiteSpaceToken = new Token
                                 {
-                                    line.AddWord(wordStart, i - 1 + buffer.Offset);
-                                    wordStart = -1; 
-                                }
-                            }
-                            else
-                            {
-                                if (wordStart < 0)
-                                {
-                                    wordStart = i + buffer.Offset;
-                                }
-                            }
+                                    IsWhitespace = true,
+                                    Range = new Range(position, position)
+                                };
+                            tokens.Add(whiteSpaceToken);
                         }
                     }
-
-                    if (lineStart > lineEnd && lineStart < binaryReader.BaseStream.Length && buffer.IsLast)
+                    else
                     {
-                        line.End = binaryReader.BaseStream.Length - 1;
-                        if (wordStart >= 0)
+                        if (whiteSpaceToken != null)
                         {
-                            line.AddWord(wordStart, line.Range.End);
+                            whiteSpaceToken.Range = new Range(whiteSpaceToken.Range.Start, position - 1);
+                            whiteSpaceToken = null;
                         }
-                        lineIndex.Add(line);
                     }
                 }
             }
 
-            if (lineIndex.Lines.Count() == 1 && lineIndex.Lines.First().Range.IsEmpty)
-                return new LineIndex();
-            return lineIndex;
+            if (whiteSpaceToken != null)
+            {
+                whiteSpaceToken.Range = new Range(whiteSpaceToken.Range.Start, buffer.LastBufferPosition);
+                tokens.Add(whiteSpaceToken);
+            }
+
+            return tokens;
         }
 
         private IEnumerable<Buffer> ReadPortion(BinaryReader reader)
@@ -98,9 +161,22 @@ namespace FileIndexer.Index
             {
                 bufferSize = Math.Min(bufferSize, reader.BaseStream.Length - offset);
                 reader.BaseStream.Position = offset;
-                yield return new Buffer(reader.ReadChars((int) bufferSize), offset, reader.BaseStream.Length);
+                var chars = reader.ReadChars((int) bufferSize);
+                yield return new Buffer(chars, offset, reader.BaseStream.Length);
                 offset += bufferSize;
             } while (offset < reader.BaseStream.Length);
+        }
+
+        class Token
+        {
+            public bool IsWhitespace { get; set; }
+            public bool IsNewline { get; set; }
+            public Range Range { get; set; }
+
+            public override string ToString()
+            {
+                return string.Format("{0}: [{1}]", IsWhitespace ? "Spaces" : "Line end", Range);
+            }
         }
 
         struct Buffer
@@ -116,9 +192,14 @@ namespace FileIndexer.Index
                 _totalBytes = totalBytes;
             }
 
-            public char[] Chars
+            public char this[int i]
             {
-                get { return _chars; }
+                get { return _chars[i]; }
+            }
+
+            public int Length
+            {
+                get { return _chars.Length; }
             }
 
             public long Offset
@@ -129,6 +210,16 @@ namespace FileIndexer.Index
             public bool IsLast
             {
                 get { return _totalBytes == _offset + _chars.Length; }
+            }
+
+            public long GetPositionIsStream(int localIndex)
+            {
+                return localIndex + Offset;
+            }
+
+            public long LastBufferPosition
+            {
+                get { return Length - 1 + Offset; }
             }
         }
     }

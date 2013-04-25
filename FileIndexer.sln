@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FD7EAD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIndexer.Console", "FileIndexer.Console\FileIndexer.Console.csproj", "{58BA4AC0-4364-4967-A202-9D7DBF629D01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIndexer.Server", "FileIndexer.Server\FileIndexer.Server.csproj", "{F213BBA0-BBD9-4445-8649-121EF10217D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{58BA4AC0-4364-4967-A202-9D7DBF629D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58BA4AC0-4364-4967-A202-9D7DBF629D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58BA4AC0-4364-4967-A202-9D7DBF629D01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F213BBA0-BBD9-4445-8649-121EF10217D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F213BBA0-BBD9-4445-8649-121EF10217D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F213BBA0-BBD9-4445-8649-121EF10217D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F213BBA0-BBD9-4445-8649-121EF10217D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

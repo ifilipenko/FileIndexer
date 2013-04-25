@@ -64,7 +64,7 @@ namespace FileIndexer.Console
                 suffix = "...";
             }
 
-            var @string = stringSource.ReadString(range.Start, range.End);
+            var @string = range.IsEmpty ? string.Empty : stringSource.ReadString(range.Start, range.End);
             System.Console.Write("{0}{1}{2}", prefix, @string, suffix);
         }
 

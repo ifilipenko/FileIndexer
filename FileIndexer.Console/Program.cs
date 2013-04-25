@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using FileIndexer.Generator;
 using FileIndexer.Index;
 
@@ -82,7 +83,7 @@ path to file        this command open specified file
         private static LineIndex GetLineIndex(Parameters parameters)
         {
             var indexCache = new LineIndexJsonFileCache(AppDomain.CurrentDomain.BaseDirectory);
-            var indexBuilder = new IndexBuilder(100*Volumes.Megabyte);
+            var indexBuilder = new IndexBuilder(ProcessingMode.Parallel, 16*Volumes.Kilobyte);
 
             System.Console.WriteLine("Checking index cache...");
             var lineIndex = indexBuilder.LoadFromCache(indexCache, parameters.FilePath);

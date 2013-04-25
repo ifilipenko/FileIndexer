@@ -17,7 +17,7 @@ namespace FileIndexer.Tests.IndexTests
         [SetUp]
         public void SetUp()
         {
-            _indexBuilder = new IndexBuilder(ReadBufferSize);
+            _indexBuilder = new IndexBuilder(ProcessingMode.Parallel, ReadBufferSize);
         }
 
         [Test]
@@ -66,10 +66,10 @@ namespace FileIndexer.Tests.IndexTests
         {
             var lines = new[]
                 {
-                    new string('w', ReadBufferSize - lineEndings.Length),
-                    new string('w', 2*ReadBufferSize - lineEndings.Length),
-                    new string('w', 3*ReadBufferSize - lineEndings.Length),
-                    new string('w', (int) (1.5*ReadBufferSize - lineEndings.Length))
+                    new string('1', ReadBufferSize - lineEndings.Length),
+                    new string('2', 2*ReadBufferSize - lineEndings.Length),
+                    new string('3', 3*ReadBufferSize - lineEndings.Length),
+                    new string('4', (int) (1.5*ReadBufferSize - lineEndings.Length))
                 };
             var text = string.Join(lineEndings, lines);
 
@@ -80,7 +80,7 @@ namespace FileIndexer.Tests.IndexTests
                 index.Lines.Should().HaveSameCount(lines);
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    index.Lines.ElementAt(i).Range.Length.Should().Be(lines[i].Length, "Line #{0} from index have unexpected length", i);
+                    index.Lines.ElementAt(i).Range.Length.Should().Be(lines[i].Length, "Line #{0} should expected length", i);
                 }
             }
         }

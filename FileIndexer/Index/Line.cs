@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json;
@@ -8,6 +9,7 @@ namespace FileIndexer.Index
     public class Line
     {
         private IList<Range> _words;
+        private long _end;
 
         private Line()
         {
@@ -28,7 +30,18 @@ namespace FileIndexer.Index
         }
 
         public long Start { get; set; }
-        public long End { get; set; }
+
+        public long End
+        {
+            get { return _end; }
+            set { _end = value; }
+        }
+
+        [JsonIgnore]
+        public bool IsEmptyLine
+        {
+            get { return _end - Start == -1; }
+        }
 
         public IEnumerable<Range> Words
         {
@@ -51,10 +64,23 @@ namespace FileIndexer.Index
             _words.Add(range);
         }
 
+        public void UpdateLastWordEnd(int newEnd)
+        {
+            if (_words.Count == 0)
+                throw new InvalidOperationException("Line has no any words");
+
+            var lastIndex = _words.Count - 1;
+            var range = _words[lastIndex];
+            _words[lastIndex] = new Range(range.Start, newEnd);
+        }
+
         [JsonIgnore]
         public Range Range
         {
-            get { return new Range(Start, End); }
+            get
+            {
+                return IsEmptyLine ? Range.CreateEmpty(Start) : new Range(Start, End);
+            }
         }
 
         private bool Equals(Line other)

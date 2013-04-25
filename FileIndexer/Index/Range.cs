@@ -5,6 +5,12 @@ namespace FileIndexer.Index
 {
     public struct Range
     {
+        public Range CreateEmpty(long start)
+        {
+            var range = new Range {_start = start, _end = start, _length = 1};
+            return range;
+        }
+
         private long _start;
         private long _end;
         private long? _length;
@@ -70,6 +76,11 @@ namespace FileIndexer.Index
             {
                 return (_start.GetHashCode()*397) ^ _end.GetHashCode();
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} - {1} ({2})", Start, End, Length);
         }
     }
 }
