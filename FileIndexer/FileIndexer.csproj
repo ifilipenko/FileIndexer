@@ -68,6 +68,7 @@
     <Compile Include="Range.cs" />
     <Compile Include="Volumes.cs" />
     <Compile Include="WordNotFoundException.cs" />
+    <Compile Include="WrongCommandOrParametersException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

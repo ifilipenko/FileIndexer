@@ -30,19 +30,27 @@ namespace FileIndexer
                 var stringSource  = new FileSource(parameters.FilePath, FixedParameters.Encoding);
                 var commandParser = new CommandParser();
 
+                Console.WriteLine("Type your command: ");
                 while (true)
                 {
-                    var commandText = Console.ReadLine();
-                    var command = commandParser.ParseCommandText(commandText);
-                    if (command != null)
+                    try
                     {
-                        command.Execute(lineIndex, stringSource);
+                        var commandText = Console.ReadLine();
+                        var command = commandParser.ParseCommandText(commandText);
+                        if (command != null)
+                        {
+                            command.Execute(lineIndex, stringSource);
+                        }
+                    }
+                    catch (WrongCommandOrParametersException ex)
+                    {
+                        PrintExceptionMessage(ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                PrintException(ex);
+                PrintUnhandeledException(ex);
             }
         }
 
@@ -72,13 +80,13 @@ path to file        this command open specified file
         private static LineIndex GetLineIndex(Parameters parameters)
         {
             var indexCache = new LineIndexJsonFileCache(AppDomain.CurrentDomain.BaseDirectory);
-            var indexBuilder = new IndexBuilder();
+            var indexBuilder = new IndexBuilder(100*Volumes.Megabyte);
 
             Console.WriteLine("Checking index cache...");
             var lineIndex = indexBuilder.LoadFromCache(indexCache, parameters.FilePath);
             if (lineIndex == null)
             {
-                Console.WriteLine("Index cache not found. Start indexing...");
+                Console.WriteLine("Index cache not found or out of date. Start indexing...");
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -95,6 +103,7 @@ path to file        this command open specified file
             {
                 Console.WriteLine("Index loaded from cache.");
             }
+            Console.WriteLine("File consist of {0} lines", lineIndex.Lines.Count());
             return lineIndex;
         }
 
@@ -125,7 +134,7 @@ path to file        this command open specified file
             throw new ArgumentException("Unexpected or incorrect parameters ", "args");
         }
 
-        private static void PrintException(Exception exception)
+        private static void PrintUnhandeledException(Exception exception)
         {
             try
             {
@@ -138,6 +147,19 @@ path to file        this command open specified file
             }
 
             Console.WriteLine("Use parameter key {0} for help.", string.Join(", ", HelpCommands));
+        }
+
+        private static void PrintExceptionMessage(Exception exception)
+        {
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(exception.Message);
+            }
+            finally
+            {
+                Console.ResetColor();
+            }
         }
     }
 }
