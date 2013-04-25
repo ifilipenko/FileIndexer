@@ -92,13 +92,13 @@ namespace FileIndexer
 
         private IEnumerable<Buffer> ReadPortion(BinaryReader reader)
         {
-            var bufferSize = _readBufferSize;
-            var offset = 0;
+            long bufferSize = _readBufferSize;
+            var offset = 0L;
             do
             {
-                bufferSize = Math.Min(bufferSize, (int) reader.BaseStream.Length - offset);
+                bufferSize = Math.Min(bufferSize, reader.BaseStream.Length - offset);
                 reader.BaseStream.Position = offset;
-                yield return new Buffer(reader.ReadChars(bufferSize), offset, reader.BaseStream.Length);
+                yield return new Buffer(reader.ReadChars((int) bufferSize), offset, reader.BaseStream.Length);
                 offset += bufferSize;
             } while (offset < reader.BaseStream.Length);
         }
