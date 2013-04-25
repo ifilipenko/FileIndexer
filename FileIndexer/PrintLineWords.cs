@@ -26,21 +26,32 @@ namespace FileIndexer
 
         public void Execute(LineIndex index, IStringsSource stringSource)
         {
-            if (_wordIndexes.Length == 0)
+            try
             {
-                var lineRange = index.GetLineRange(_lineIndex);
-                PrintText(string.Empty, lineRange, stringSource);
-            }
-            else
-            {
-                for (int i = 0; i < _wordIndexes.Length; i++)
+                if (_wordIndexes.Length == 0)
                 {
-                    var wordRange = index.GetWordRange(_lineIndex, _wordIndexes[i]);
-                    var prefix    = i == 0 ? string.Empty : " ";
-                    PrintText(prefix, wordRange, stringSource);
+                    var lineRange = index.GetLineRange(_lineIndex);
+                    PrintText(string.Empty, lineRange, stringSource);
                 }
+                else
+                {
+                    for (int i = 0; i < _wordIndexes.Length; i++)
+                    {
+                        var wordRange = index.GetWordRange(_lineIndex, _wordIndexes[i]);
+                        var prefix = i == 0 ? string.Empty : " ";
+                        PrintText(prefix, wordRange, stringSource);
+                    }
+                }
+                Console.WriteLine();
             }
-            Console.WriteLine();
+            catch (LineNotFoundException ex)
+            {
+                PrintException(ex);
+            }
+            catch (WordNotFoundException ex)
+            {
+                PrintException(ex);
+            }
         }
 
         private void PrintText(string prefix, Range range, IStringsSource stringSource)
@@ -54,6 +65,13 @@ namespace FileIndexer
 
             var @string = stringSource.ReadString(range.Start, range.End);
             Console.Write("{0}{1}{2}", prefix, @string, suffix);
+        }
+
+        private static void PrintException(Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ex.Message);
+            Console.ResetColor();
         }
     }
 }
