@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 
-namespace FileIndexer
+namespace FileIndexer.Generator
 {
-    internal class FileGenerator
+    public class FileGenerator
     {
         private const int DefaultPartSizeForBigFiles = 10 * Volumes.Megabyte;
         private readonly Random _random = new Random((int) DateTime.Now.Ticks);

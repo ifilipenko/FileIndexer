@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace FileIndexer
+namespace FileIndexer.Index
 {
     [Serializable]
     public class LineNotFoundException : Exception

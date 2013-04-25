@@ -3,7 +3,7 @@ using System.Text;
 
 namespace FileIndexer
 {
-    internal class FileSource : IStringsSource
+    public class FileSource : IStringsSource
     {
         private readonly string _filePath;
         private readonly Encoding _encoding;

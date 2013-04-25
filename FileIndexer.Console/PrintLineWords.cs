@@ -1,6 +1,7 @@
 ﻿using System;
+using FileIndexer.Index;
 
-namespace FileIndexer
+namespace FileIndexer.Console
 {
     public class PrintLineWords : ICommand
     {
@@ -42,7 +43,7 @@ namespace FileIndexer
                         PrintText(prefix, wordRange, stringSource);
                     }
                 }
-                Console.WriteLine();
+                System.Console.WriteLine();
             }
             catch (LineNotFoundException ex)
             {
@@ -64,14 +65,14 @@ namespace FileIndexer
             }
 
             var @string = stringSource.ReadString(range.Start, range.End);
-            Console.Write("{0}{1}{2}", prefix, @string, suffix);
+            System.Console.Write("{0}{1}{2}", prefix, @string, suffix);
         }
 
         private static void PrintException(Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(ex.Message);
-            Console.ResetColor();
+            System.Console.ForegroundColor = ConsoleColor.Red;
+            System.Console.WriteLine(ex.Message);
+            System.Console.ResetColor();
         }
     }
 }

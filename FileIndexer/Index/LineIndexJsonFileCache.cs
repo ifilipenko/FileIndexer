@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace FileIndexer
+namespace FileIndexer.Index
 {
-    internal class LineIndexJsonFileCache : IIndexCache
+    public class LineIndexJsonFileCache : IIndexCache
     {
         private readonly string _cachesLocation;
 

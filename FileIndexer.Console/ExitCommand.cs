@@ -1,6 +1,7 @@
 ﻿using System;
+using FileIndexer.Index;
 
-namespace FileIndexer
+namespace FileIndexer.Console
 {
     public class ExitCommand : ICommand
     {

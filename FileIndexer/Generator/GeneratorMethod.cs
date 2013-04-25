@@ -1,4 +1,4 @@
-﻿namespace FileIndexer
+﻿namespace FileIndexer.Generator
 {
     public enum GeneratorMethod
     {

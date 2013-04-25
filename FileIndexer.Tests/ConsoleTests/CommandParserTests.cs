@@ -1,8 +1,9 @@
 ﻿using System;
+using FileIndexer.Console;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace FileIndexer.Tests
+namespace FileIndexer.Tests.ConsoleTests
 {
     [TestFixture]
     public class CommandParserTests
@@ -39,7 +40,7 @@ namespace FileIndexer.Tests
         {
             Action action = () => _commandParser.ParseCommandText("unknown command text");
 
-            action.ShouldThrow<ArgumentException>();
+            action.ShouldThrow<WrongCommandOrParametersException>();
         }
 
         [Test]

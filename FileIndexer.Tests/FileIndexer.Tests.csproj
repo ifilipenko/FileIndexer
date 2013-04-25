@@ -53,21 +53,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandParserTests.cs" />
-    <Compile Include="FileIndexerTests.cs" />
-    <Compile Include="LineIndexTests.cs" />
-    <Compile Include="PrintLineWordsTests.cs" />
+    <Compile Include="ConsoleTests\CommandParserTests.cs" />
+    <Compile Include="IndexTests\FileIndexerTests.cs" />
+    <Compile Include="IndexTests\LineIndexTests.cs" />
+    <Compile Include="ConsoleTests\PrintLineWordsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FileIndexer.Console\FileIndexer.Console.csproj">
+      <Project>{58BA4AC0-4364-4967-A202-9D7DBF629D01}</Project>
+      <Name>FileIndexer.Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FileIndexer\FileIndexer.csproj">
       <Project>{0E7DF62A-8DEC-4ADE-A584-0DFE8FB94FCA}</Project>
       <Name>FileIndexer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

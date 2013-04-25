@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace FileIndexer
+namespace FileIndexer.Console
 {
     public class CommandParser
     {

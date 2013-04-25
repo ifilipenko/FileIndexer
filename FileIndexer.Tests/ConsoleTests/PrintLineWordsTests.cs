@@ -1,8 +1,10 @@
-﻿using FluentAssertions;
+﻿using FileIndexer.Console;
+using FileIndexer.Index;
+using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace FileIndexer.Tests
+namespace FileIndexer.Tests.ConsoleTests
 {
     [TestFixture]
     public class PrintLineWordsTests

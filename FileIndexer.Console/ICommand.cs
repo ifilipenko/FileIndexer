@@ -1,4 +1,6 @@
-﻿namespace FileIndexer
+﻿using FileIndexer.Index;
+
+namespace FileIndexer.Console
 {
     public interface ICommand
     {

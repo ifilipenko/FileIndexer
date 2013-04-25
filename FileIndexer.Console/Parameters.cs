@@ -1,6 +1,7 @@
 ﻿using System;
+using FileIndexer.Generator;
 
-namespace FileIndexer
+namespace FileIndexer.Console
 {
     public class Parameters
     {

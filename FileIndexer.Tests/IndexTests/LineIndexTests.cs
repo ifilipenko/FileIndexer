@@ -1,8 +1,9 @@
-﻿using FluentAssertions;
+﻿using FileIndexer.Index;
+using FluentAssertions;
 using NUnit.Framework;
 using Newtonsoft.Json;
 
-namespace FileIndexer.Tests
+namespace FileIndexer.Tests.IndexTests
 {
     [TestFixture]
     public class LineIndexTests

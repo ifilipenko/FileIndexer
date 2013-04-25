@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace FileIndexer
+namespace FileIndexer.Console
 {
     [Serializable]
     public class WrongCommandOrParametersException : Exception

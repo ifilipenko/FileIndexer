@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using FileIndexer.Index;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace FileIndexer.Tests
+namespace FileIndexer.Tests.IndexTests
 {
     [TestFixture]
     public class IndexBuilderTests

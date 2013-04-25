@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FileIndexer
+namespace FileIndexer.Index
 {
     public class LineIndex
     {

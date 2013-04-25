@@ -1,4 +1,4 @@
-﻿namespace FileIndexer
+﻿namespace FileIndexer.Index
 {
     public interface IIndexCache
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace FileIndexer
+namespace FileIndexer.Index
 {
     public struct Range
     {

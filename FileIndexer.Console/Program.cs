@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using FileIndexer.Generator;
+using FileIndexer.Index;
 
-namespace FileIndexer
+namespace FileIndexer.Console
 {
     class Program
     {
@@ -30,12 +32,12 @@ namespace FileIndexer
                 var stringSource  = new FileSource(parameters.FilePath, FixedParameters.Encoding);
                 var commandParser = new CommandParser();
 
-                Console.WriteLine("Type your command: ");
+                System.Console.WriteLine("Type your command: ");
                 while (true)
                 {
                     try
                     {
-                        var commandText = Console.ReadLine();
+                        var commandText = System.Console.ReadLine();
                         var command = commandParser.ParseCommandText(commandText);
                         if (command != null)
                         {
@@ -74,7 +76,7 @@ path to file        this command open specified file
         ManyLinesWithoutWords  file with 100 lines with 
                             whiltespaces only
     path      path to generated file";
-            Console.WriteLine(help);
+            System.Console.WriteLine(help);
         }
 
         private static LineIndex GetLineIndex(Parameters parameters)
@@ -82,11 +84,11 @@ path to file        this command open specified file
             var indexCache = new LineIndexJsonFileCache(AppDomain.CurrentDomain.BaseDirectory);
             var indexBuilder = new IndexBuilder(100*Volumes.Megabyte);
 
-            Console.WriteLine("Checking index cache...");
+            System.Console.WriteLine("Checking index cache...");
             var lineIndex = indexBuilder.LoadFromCache(indexCache, parameters.FilePath);
             if (lineIndex == null)
             {
-                Console.WriteLine("Index cache not found or out of date. Start indexing...");
+                System.Console.WriteLine("Index cache not found or out of date. Start indexing...");
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -96,14 +98,14 @@ path to file        this command open specified file
                 }
                 stopwatch.Stop();
 
-                Console.WriteLine("Indexing complete at {0}.", stopwatch.Elapsed);
+                System.Console.WriteLine("Indexing complete at {0}.", stopwatch.Elapsed);
                 indexCache.Update(lineIndex, parameters.FilePath);
             }
             else
             {
-                Console.WriteLine("Index loaded from cache.");
+                System.Console.WriteLine("Index loaded from cache.");
             }
-            Console.WriteLine("File consist of {0} lines", lineIndex.Lines.Count());
+            System.Console.WriteLine("File consist of {0} lines", lineIndex.Lines.Count());
             return lineIndex;
         }
 
@@ -138,27 +140,27 @@ path to file        this command open specified file
         {
             try
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(exception);
+                System.Console.ForegroundColor = ConsoleColor.Red;
+                System.Console.WriteLine(exception);
             }
             finally
             {
-                Console.ResetColor();
+                System.Console.ResetColor();
             }
 
-            Console.WriteLine("Use parameter key {0} for help.", string.Join(", ", HelpCommands));
+            System.Console.WriteLine("Use parameter key {0} for help.", string.Join(", ", HelpCommands));
         }
 
         private static void PrintExceptionMessage(Exception exception)
         {
             try
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(exception.Message);
+                System.Console.ForegroundColor = ConsoleColor.Red;
+                System.Console.WriteLine(exception.Message);
             }
             finally
             {
-                Console.ResetColor();
+                System.Console.ResetColor();
             }
         }
     }

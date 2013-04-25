@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace FileIndexer
+namespace FileIndexer.Index
 {
     public class Line
     {
