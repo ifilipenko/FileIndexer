@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FileIndexer
@@ -23,6 +24,35 @@ namespace FileIndexer
             _lines.Add(line);
         }
 
+        public Range GetLineRange(int lineIndex)
+        {
+            return GetLine(lineIndex).Range;
+        }
+
+        public Range GetWordRange(int lineIndex, int wordIndex)
+        {
+            try
+            {
+                return GetLine(lineIndex).GetWordRange(wordIndex);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new WordNotFoundException(lineIndex, wordIndex);
+            }
+        }
+
+        private Line GetLine(int lineIndex)
+        {
+            try
+            {
+                return _lines[lineIndex];
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new LineNotFoundException(lineIndex);
+            }
+        }
+
         private bool Equals(LineIndex other)
         {
             return Lines.SequenceEqual(other.Lines);
@@ -39,16 +69,6 @@ namespace FileIndexer
         public override int GetHashCode()
         {
             return (_lines != null ? _lines.GetHashCode() : 0);
-        }
-
-        public Range GetLineRange(int lineIndex)
-        {
-            return _lines[lineIndex].Range;
-        }
-
-        public Range GetWordRange(int lineIndex, int wordIndex)
-        {
-            return _lines[lineIndex].GetWordRange(wordIndex);
         }
     }
 }
