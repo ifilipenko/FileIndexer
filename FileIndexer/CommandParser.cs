@@ -17,8 +17,7 @@ namespace FileIndexer
                                        .Select(x => Convert.ToInt32(x))
                                        .ToArray();
                 if (lines.Length == 0)
-                    throw new ArgumentException("\"get\" command has invalid format: line number is required",
-                                                "commandText");
+                    throw new WrongCommandOrParametersException("\"get\" command has invalid format: line number is required");
 
                 return new PrintLineWords(lines[0], lines.Skip(1).ToArray());
             }
@@ -28,7 +27,7 @@ namespace FileIndexer
                 return new ExitCommand();
             }
 
-            throw new ArgumentException("Unknown command or have invalid syntax");
+            throw new WrongCommandOrParametersException("Unknown command or have invalid syntax");
         }
     }
 }
