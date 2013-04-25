@@ -6,6 +6,7 @@ namespace FileIndexer
 {
     internal class FileGenerator
     {
+        private const int DefaultPartSizeForBigFiles = 10 * Volumes.Megabyte;
         private readonly Random _random = new Random((int) DateTime.Now.Ticks);
         private readonly GeneratorMethod _generatorMethod;
 
@@ -72,7 +73,7 @@ namespace FileIndexer
         {
             while (size > 0)
             {
-                var partSize = (int) Math.Min(size, 4*Volumes.Megabyte);
+                var partSize = (int)Math.Min(size, DefaultPartSizeForBigFiles);
                 var wordCount = partSize < Volumes.Kilobyte ? 10 : 100;
                 if (partSize < wordCount)
                 {
@@ -89,7 +90,7 @@ namespace FileIndexer
         {
             while (size > 0)
             {
-                var partSize = (int) Math.Min(size, 4 * Volumes.Megabyte);
+                var partSize = (int) Math.Min(size, DefaultPartSizeForBigFiles);
                 var wordPart = GenerateRandomString(partSize, partSize);
                 writer.Write(wordPart);
                 size -= wordPart.Length;
@@ -107,7 +108,7 @@ namespace FileIndexer
             var stringBuilder = new StringBuilder();
             for (int i = 0; i < wordCount; i++)
             {
-                var wordLength = _random.Next(maxWordSize/2, maxWordSize + 1);
+                var wordLength = _random.Next(100, maxWordSize + 1);
                 var whiteSpacesLength = _random.Next(1, 5);
                 stringBuilder.Append(GenerateRandomString(wordLength, wordLength));
                 stringBuilder.Append(GenerateWhitespaceString(whiteSpacesLength));
