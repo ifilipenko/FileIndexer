@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 
 namespace FileIndexer
 {
@@ -6,7 +6,7 @@ namespace FileIndexer
     {
         public void Execute(LineIndex index, IStringsSource stringSource)
         {
-            Process.GetCurrentProcess().Close();
+            Environment.Exit(0);
         }
     }
 }
