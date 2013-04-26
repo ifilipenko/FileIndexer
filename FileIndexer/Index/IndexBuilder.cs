@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FileIndexer.Index
 {
@@ -53,14 +49,10 @@ namespace FileIndexer.Index
             {
                 case ProcessingMode.Sequential:
                     return ReadPortion(binaryReader).SelectMany(ReadTokensFromBuffer).ToList();
-                    break;
                 default:
                     return ReadPortion(binaryReader).AsParallel()
                                                     .SelectMany(ReadTokensFromBuffer)
                                                     .ToList();
-
-                    //Parallel.ForEach(ReadPortion(binaryReader).ToList(), buffer => ReadTokensFromBuffer(buffer, tokens));
-                    break;
             }
         }
 
@@ -102,7 +94,7 @@ namespace FileIndexer.Index
             Token whiteSpaceToken = null;
             for (int i = 0; i < buffer.Length; i++)
             {
-                var position = buffer.GetPositionIsStream(i);
+                var position = buffer.GetPositionInStream(i);
                 if (buffer[i] == '\r')
                 {
                     var lineEnd = position;
@@ -162,14 +154,19 @@ namespace FileIndexer.Index
                 bufferSize = Math.Min(bufferSize, reader.BaseStream.Length - offset);
                 reader.BaseStream.Position = offset;
                 var chars = reader.ReadChars((int) bufferSize);
-                yield return new Buffer(chars, offset, reader.BaseStream.Length);
+                yield return new Buffer(chars, offset);
                 offset += bufferSize;
             } while (offset < reader.BaseStream.Length);
         }
 
         class Token
         {
-            public bool IsWhitespace { get; set; }
+            public bool IsWhitespace
+            {
+                get { return !IsNewline; }
+                set { IsNewline = !value; }
+            }
+
             public bool IsNewline { get; set; }
             public Range Range { get; set; }
 
@@ -183,13 +180,11 @@ namespace FileIndexer.Index
         {
             private readonly char[] _chars;
             private readonly long _offset;
-            private readonly long _totalBytes;
-
-            public Buffer(char[] chars, long offset, long totalBytes)
+            
+            public Buffer(char[] chars, long offset)
             {
                 _chars = chars;
                 _offset = offset;
-                _totalBytes = totalBytes;
             }
 
             public char this[int i]
@@ -202,24 +197,14 @@ namespace FileIndexer.Index
                 get { return _chars.Length; }
             }
 
-            public long Offset
+            public long GetPositionInStream(int localIndex)
             {
-                get { return _offset; }
-            }
-
-            public bool IsLast
-            {
-                get { return _totalBytes == _offset + _chars.Length; }
-            }
-
-            public long GetPositionIsStream(int localIndex)
-            {
-                return localIndex + Offset;
+                return localIndex + _offset;
             }
 
             public long LastBufferPosition
             {
-                get { return Length - 1 + Offset; }
+                get { return Length - 1 + _offset; }
             }
         }
     }

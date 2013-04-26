@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,6 +59,7 @@
     <Compile Include="IndexTests\LineIndexTests.cs" />
     <Compile Include="ConsoleTests\PrintLineWordsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceTests\IndexServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -66,6 +68,10 @@
     <ProjectReference Include="..\FileIndexer.Console\FileIndexer.Console.csproj">
       <Project>{58BA4AC0-4364-4967-A202-9D7DBF629D01}</Project>
       <Name>FileIndexer.Console</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileIndexer.Server\FileIndexer.Server.csproj">
+      <Project>{F213BBA0-BBD9-4445-8649-121EF10217D7}</Project>
+      <Name>FileIndexer.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\FileIndexer\FileIndexer.csproj">
       <Project>{0E7DF62A-8DEC-4ADE-A584-0DFE8FB94FCA}</Project>

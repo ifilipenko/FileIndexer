@@ -64,16 +64,6 @@ namespace FileIndexer.Index
             _words.Add(range);
         }
 
-        public void UpdateLastWordEnd(int newEnd)
-        {
-            if (_words.Count == 0)
-                throw new InvalidOperationException("Line has no any words");
-
-            var lastIndex = _words.Count - 1;
-            var range = _words[lastIndex];
-            _words[lastIndex] = new Range(range.Start, newEnd);
-        }
-
         [JsonIgnore]
         public Range Range
         {
@@ -100,8 +90,7 @@ namespace FileIndexer.Index
         {
             unchecked
             {
-                var hashCode = (_words != null ? _words.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ Start.GetHashCode();
+                var hashCode = Start.GetHashCode();
                 hashCode = (hashCode*397) ^ End.GetHashCode();
                 return hashCode;
             }

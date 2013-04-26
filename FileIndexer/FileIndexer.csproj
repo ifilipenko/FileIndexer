@@ -52,6 +52,7 @@
     <Compile Include="Generator\FileGenerator.cs" />
     <Compile Include="FixedParameters.cs" />
     <Compile Include="Generator\GeneratorMethod.cs" />
+    <Compile Include="IndexLoader.cs" />
     <Compile Include="Index\IIndexCache.cs" />
     <Compile Include="Index\IndexBuilder.cs" />
     <Compile Include="FileSource.cs" />

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using FileIndexer.Generator;
-using FileIndexer.Index;
 
 namespace FileIndexer.Console
 {
@@ -29,7 +26,7 @@ namespace FileIndexer.Console
                     return;
                 }
 
-                var lineIndex     = GetLineIndex(parameters);
+                var lineIndex     = IndexLoader.GetLineIndexForFile(parameters.FilePath);
                 var stringSource  = new FileSource(parameters.FilePath, FixedParameters.Encoding);
                 var commandParser = new CommandParser();
 
@@ -80,35 +77,7 @@ path to file        this command open specified file
             System.Console.WriteLine(help);
         }
 
-        private static LineIndex GetLineIndex(Parameters parameters)
-        {
-            var indexCache = new LineIndexJsonFileCache(AppDomain.CurrentDomain.BaseDirectory);
-            var indexBuilder = new IndexBuilder(ProcessingMode.Parallel, 16*Volumes.Kilobyte);
-
-            System.Console.WriteLine("Checking index cache...");
-            var lineIndex = indexBuilder.LoadFromCache(indexCache, parameters.FilePath);
-            if (lineIndex == null)
-            {
-                System.Console.WriteLine("Index cache not found or out of date. Start indexing...");
-
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-                using (var stream = File.OpenRead(parameters.FilePath))
-                {
-                    lineIndex = indexBuilder.BuildFromStream(stream, FixedParameters.Encoding);
-                }
-                stopwatch.Stop();
-
-                System.Console.WriteLine("Indexing complete at {0}.", stopwatch.Elapsed);
-                indexCache.Update(lineIndex, parameters.FilePath);
-            }
-            else
-            {
-                System.Console.WriteLine("Index loaded from cache.");
-            }
-            System.Console.WriteLine("File consist of {0} lines", lineIndex.Lines.Count());
-            return lineIndex;
-        }
+        
 
         private static Parameters ParseParameters(string[] args)
         {
