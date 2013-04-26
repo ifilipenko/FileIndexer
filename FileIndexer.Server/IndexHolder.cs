@@ -5,14 +5,14 @@ namespace FileIndexer.Server
 {
     internal class IndexHolder : IIndexHolder
     {
-        public static readonly object SyncRoot = new object();
-        public LineIndex Index { get; set; }
+        private static readonly object _syncRoot = new object();
+        private LineIndex _index;
 
         public LineIndex GetIndex()
         {
-            if (Index == null)
+            if (_index == null)
                 throw new IndexIsNotAvailableException();
-            return Index;
+            return _index;
         }
 
         public void LoadIndexForFile(string filepath)
@@ -20,9 +20,9 @@ namespace FileIndexer.Server
             Task.Factory.StartNew(() =>
             {
                 var index = IndexLoader.GetLineIndexForFile(filepath);
-                lock (IndexHolder.SyncRoot)
+                lock (_syncRoot)
                 {
-                    Index = index;
+                    _index = index;
                 }
             });
         }

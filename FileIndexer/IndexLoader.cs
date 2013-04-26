@@ -13,11 +13,11 @@ namespace FileIndexer
             var indexCache = new LineIndexJsonFileCache(AppDomain.CurrentDomain.BaseDirectory);
             var indexBuilder = new IndexBuilder(ProcessingMode.Parallel, 4 * Volumes.Kilobyte);
 
-            System.Console.WriteLine("Checking index cache...");
+            Console.WriteLine("Checking index cache...");
             var lineIndex = indexBuilder.LoadFromCache(indexCache, filePath);
             if (lineIndex == null)
             {
-                System.Console.WriteLine("Index cache not found or out of date. Start indexing...");
+                Console.WriteLine("Index cache not found or out of date. Start indexing...");
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -27,14 +27,14 @@ namespace FileIndexer
                 }
                 stopwatch.Stop();
 
-                System.Console.WriteLine("Indexing complete at {0}.", stopwatch.Elapsed);
+                Console.WriteLine("Indexing complete at {0}.", stopwatch.Elapsed);
                 indexCache.Update(lineIndex, filePath);
             }
             else
             {
-                System.Console.WriteLine("Index loaded from cache.");
+                Console.WriteLine("Index loaded from cache.");
             }
-            System.Console.WriteLine("File consist of {0} lines", lineIndex.Lines.Count());
+            Console.WriteLine("File consist of {0} lines", lineIndex.Lines.Count());
             return lineIndex;
         }
     }

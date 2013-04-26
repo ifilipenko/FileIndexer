@@ -1,6 +1,9 @@
 ﻿using System;
 using FileIndexer.Console;
+using FileIndexer.ConsoleHelpers;
+using FileIndexer.Index;
 using FluentAssertions;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace FileIndexer.Tests.ConsoleTests
@@ -13,7 +16,7 @@ namespace FileIndexer.Tests.ConsoleTests
         [SetUp]
         public void SetUp()
         {
-            _commandParser = new CommandParser();
+            _commandParser = new CommandParser(new LocalIndexCommandFactory(new LineIndex(), Substitute.For<IStringsSource>()));
         }
 
         [TestCase(null)]
@@ -49,7 +52,7 @@ namespace FileIndexer.Tests.ConsoleTests
             var command = _commandParser.ParseCommandText("get    1 ");
 
             command.Should().BeOfType<PrintLineWords>();
-            command.As<PrintLineWords>().LineIndex.Should().Be(1);
+            command.As<PrintLineWords>().Line.Should().Be(1);
         }
 
         [Test]
@@ -58,7 +61,7 @@ namespace FileIndexer.Tests.ConsoleTests
             var command = _commandParser.ParseCommandText("get  2  3   10  12");
 
             command.Should().BeOfType<PrintLineWords>();
-            command.As<PrintLineWords>().LineIndex.Should().Be(2);
+            command.As<PrintLineWords>().Line.Should().Be(2);
             command.As<PrintLineWords>().WordIndexes.Should().BeEquivalentTo(new[] {3, 10, 12});
         }
     }

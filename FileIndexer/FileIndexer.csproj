@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleHelpers\CommandParser.cs" />
+    <Compile Include="ConsoleHelpers\ExitCommand.cs" />
+    <Compile Include="ConsoleHelpers\ICommand.cs" />
+    <Compile Include="ConsoleHelpers\ICommandFactory.cs" />
+    <Compile Include="ConsoleHelpers\Print.cs" />
+    <Compile Include="ConsoleHelpers\WrongCommandOrParametersException.cs" />
     <Compile Include="Generator\FileGenerator.cs" />
     <Compile Include="FixedParameters.cs" />
     <Compile Include="Generator\GeneratorMethod.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using FileIndexer.ConsoleHelpers;
 using FileIndexer.Generator;
 
 namespace FileIndexer.Console
@@ -28,9 +29,9 @@ namespace FileIndexer.Console
 
                 var lineIndex     = IndexLoader.GetLineIndexForFile(parameters.FilePath);
                 var stringSource  = new FileSource(parameters.FilePath, FixedParameters.Encoding);
-                var commandParser = new CommandParser();
+                var commandParser = new CommandParser(new LocalIndexCommandFactory(lineIndex, stringSource));
 
-                System.Console.WriteLine("Type your command: ");
+                System.Console.WriteLine("Type command: ");
                 while (true)
                 {
                     try
@@ -39,12 +40,12 @@ namespace FileIndexer.Console
                         var command = commandParser.ParseCommandText(commandText);
                         if (command != null)
                         {
-                            command.Execute(lineIndex, stringSource);
+                            command.Execute();
                         }
                     }
                     catch (WrongCommandOrParametersException ex)
                     {
-                        PrintExceptionMessage(ex);
+                        Print.PrintExceptionMessage(ex);
                     }
                 }
             }
@@ -77,8 +78,6 @@ path to file        this command open specified file
             System.Console.WriteLine(help);
         }
 
-        
-
         private static Parameters ParseParameters(string[] args)
         {
             switch (args.Length)
@@ -106,32 +105,11 @@ path to file        this command open specified file
             throw new ArgumentException("Unexpected or incorrect parameters ", "args");
         }
 
-        private static void PrintUnhandeledException(Exception exception)
+        public static void PrintUnhandeledException(Exception exception)
         {
-            try
-            {
-                System.Console.ForegroundColor = ConsoleColor.Red;
-                System.Console.WriteLine(exception);
-            }
-            finally
-            {
-                System.Console.ResetColor();
-            }
+            Print.PrintErrorMessage(exception.ToString());
 
             System.Console.WriteLine("Use parameter key {0} for help.", string.Join(", ", HelpCommands));
-        }
-
-        private static void PrintExceptionMessage(Exception exception)
-        {
-            try
-            {
-                System.Console.ForegroundColor = ConsoleColor.Red;
-                System.Console.WriteLine(exception.Message);
-            }
-            finally
-            {
-                System.Console.ResetColor();
-            }
         }
     }
 }

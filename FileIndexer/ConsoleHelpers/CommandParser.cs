@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Linq;
 
-namespace FileIndexer.Console
+namespace FileIndexer.ConsoleHelpers
 {
     public class CommandParser
     {
+        private readonly ICommandFactory _commandFactory;
+
+        public CommandParser(ICommandFactory commandFactory)
+        {
+            _commandFactory = commandFactory;
+        }
+
         public ICommand ParseCommandText(string commandText)
         {
             if (string.IsNullOrWhiteSpace(commandText))
@@ -19,12 +26,12 @@ namespace FileIndexer.Console
                 if (lines.Length == 0)
                     throw new WrongCommandOrParametersException("\"get\" command has invalid format: line number is required");
 
-                return new PrintLineWords(lines[0], lines.Skip(1).ToArray());
+                return _commandFactory.CreatePrintWordsCommand(lines[0], lines.Skip(1).ToArray());
             }
 
             if (commandText.StartsWith("exit", StringComparison.OrdinalIgnoreCase))
             {
-                return new ExitCommand();
+                return _commandFactory.CreateExitCommand();
             }
 
             throw new WrongCommandOrParametersException("Unknown command or have invalid syntax");

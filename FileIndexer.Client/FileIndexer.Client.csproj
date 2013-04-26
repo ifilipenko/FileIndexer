@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{58BA4AC0-4364-4967-A202-9D7DBF629D01}</ProjectGuid>
+    <ProjectGuid>{02198127-98AD-43CC-95B8-D102C2EB9C29}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileIndexer.Console</RootNamespace>
-    <AssemblyName>FileIndexer.Console</AssemblyName>
+    <RootNamespace>FileIndexer.Client</RootNamespace>
+    <AssemblyName>FileIndexer.Client</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,11 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LocalIndexCommandFactory.cs" />
+    <Compile Include="IndexServiceClient.generated.cs" />
+    <Compile Include="GetFromServiceAndPrintLineWordsCommand.cs" />
     <Compile Include="Parameters.cs" />
-    <Compile Include="PrintLineWords.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceClientCommandFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

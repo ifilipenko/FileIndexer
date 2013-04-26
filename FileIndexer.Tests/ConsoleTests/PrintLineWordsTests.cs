@@ -34,18 +34,18 @@ namespace FileIndexer.Tests.ConsoleTests
         [Test]
         public void Ctor_should_initialize_line_index_and_words_array()
         {
-            var command = new PrintLineWords(1, new[] {1, 2, 3});
+            var command = new PrintLineWords(1, new[] {1, 2, 3}, _index, _stringsSource);
 
-            command.LineIndex.Should().Be(1);
+            command.Line.Should().Be(1);
             command.WordIndexes.Should().BeEquivalentTo(new[] {1, 2, 3});
         }
 
         [Test]
         public void Should_load_line_from_string_source()
         {
-            var command = new PrintLineWords(1, new int[0]);
+            var command = new PrintLineWords(1, new int[0], _index, _stringsSource);
 
-            command.Execute(_index, _stringsSource);
+            command.Execute();
 
             _stringsSource.Received(1).ReadString(15, 25);
         }
@@ -54,9 +54,9 @@ namespace FileIndexer.Tests.ConsoleTests
         public void Should_limit_loading_line_content_with_one_kilobyte()
         {
             _index.Add(new Line(27, 2000));
-            var command = new PrintLineWords(2, new int[0]);
+            var command = new PrintLineWords(2, new int[0], _index, _stringsSource);
 
-            command.Execute(_index, _stringsSource);
+            command.Execute();
 
             _stringsSource.Received(1).ReadString(27, Volumes.Kilobyte - 1 + 27);
         }
@@ -64,9 +64,9 @@ namespace FileIndexer.Tests.ConsoleTests
         [Test]
         public void Should_load_words_of_specified_line()
         {
-            var command = new PrintLineWords(1, new[] {1, 2});
+            var command = new PrintLineWords(1, new[] {1, 2}, _index, _stringsSource);
 
-            command.Execute(_index, _stringsSource);
+            command.Execute();
 
             _stringsSource.Received(1).ReadString(18, 20);
             _stringsSource.Received(1).ReadString(21, 23);
