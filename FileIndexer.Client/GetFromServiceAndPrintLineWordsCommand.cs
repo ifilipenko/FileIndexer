@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ServiceModel;
+using System.Text;
 using FileIndexer.ConsoleHelpers;
+using FileIndexer.WCF.Binding;
 
 namespace FileIndexer.Client
 {
@@ -10,7 +12,7 @@ namespace FileIndexer.Client
         private readonly int[] _wordIndexes;
         private readonly string _serverAddress;
         private readonly EndpointAddress _endpointAddress;
-        private readonly BasicHttpBinding _binding;
+        private readonly CustomTextEncodingHttpBinding _binding;
 
         public GetFromServiceAndPrintLineWordsCommand(int lineIndex, int[] wordIndexes, string serverAddress)
         {
@@ -18,7 +20,7 @@ namespace FileIndexer.Client
             _wordIndexes     = wordIndexes;
             _serverAddress   = serverAddress;
             _endpointAddress = new EndpointAddress(new Uri(_serverAddress));
-            _binding         = new BasicHttpBinding();
+            _binding         = new CustomTextEncodingHttpBinding(Encoding.ASCII.EncodingName);
         }
 
         public void Execute()
@@ -41,6 +43,7 @@ namespace FileIndexer.Client
             try
             {
                 var text = await client.GetAsync(_lineIndex, _wordIndexes);
+                
                 Console.WriteLine(text);
             }
             catch (FaultException ex)

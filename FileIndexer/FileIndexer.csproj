@@ -69,6 +69,7 @@
     <Compile Include="IStringsSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Index\Range.cs" />
+    <Compile Include="StringSymbolsFilter.cs" />
     <Compile Include="Volumes.cs" />
     <Compile Include="WordNotFoundException.cs" />
   </ItemGroup>

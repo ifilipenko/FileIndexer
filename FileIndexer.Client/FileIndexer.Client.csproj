@@ -53,6 +53,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FileIndexer.WCF\FileIndexer.WCF.csproj">
+      <Project>{788E9A0F-7EF4-42F7-AAD2-6AC51B3802C0}</Project>
+      <Name>FileIndexer.WCF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FileIndexer\FileIndexer.csproj">
       <Project>{0E7DF62A-8DEC-4ADE-A584-0DFE8FB94FCA}</Project>
       <Name>FileIndexer</Name>

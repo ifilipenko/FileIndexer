@@ -2,6 +2,8 @@
 using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using System.Text;
+using FileIndexer.WCF.Binding;
 
 namespace FileIndexer.Server
 {
@@ -18,6 +20,10 @@ namespace FileIndexer.Server
             using (var host = new ServiceHost(indexService, baseAddress))
             {
                 EnableMetadataPublishing(host);
+
+                host.AddServiceEndpoint(indexService.GetType(),
+                                        new CustomTextEncodingHttpBinding(Encoding.ASCII.EncodingName),
+                                        baseAddress);
 
                 host.Open();
 

@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F213BBA0-BBD9-4445-8649-121EF10217D7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{788E9A0F-7EF4-42F7-AAD2-6AC51B3802C0}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileIndexer.Server</RootNamespace>
-    <AssemblyName>FileIndexer.Server</AssemblyName>
+    <RootNamespace>FileIndexer.WCF</RootNamespace>
+    <AssemblyName>FileIndexer.WCF</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -36,7 +34,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,26 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IIndexHolder.cs" />
-    <Compile Include="IndexHolder.cs" />
-    <Compile Include="IndexIsNotAvailableException.cs" />
-    <Compile Include="IndexService.cs" />
-    <Compile Include="Parameters.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Binding\CustomTextEncodingHttpBinding.cs" />
+    <Compile Include="Binding\CustomTextMessageBindingElement.cs" />
+    <Compile Include="Binding\CustomTextMessageEncoder.cs" />
+    <Compile Include="Binding\CustomTextMessageEncoderFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FileIndexer.WCF\FileIndexer.WCF.csproj">
-      <Project>{788E9A0F-7EF4-42F7-AAD2-6AC51B3802C0}</Project>
-      <Name>FileIndexer.WCF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileIndexer\FileIndexer.csproj">
-      <Project>{0E7DF62A-8DEC-4ADE-A584-0DFE8FB94FCA}</Project>
-      <Name>FileIndexer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

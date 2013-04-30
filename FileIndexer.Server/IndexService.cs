@@ -29,13 +29,18 @@ namespace FileIndexer.Server
             try
             {
                 var index = _indexHolder.GetIndex();
+
+                string result;
                 if (words.Length == 0)
                 {
                     var lineRange = index.GetLineRange(lineIndex);
-                    return ReadTextToString(lineRange);
+                    result = ReadTextToString(lineRange);
+                }
+                else
+                {
+                    result = string.Join(" ", ReadWords(lineIndex, words));
                 }
 
-                var result = string.Join(" ", ReadWords(lineIndex, words));
                 Console.WriteLine("RETURNS {0}", result);
                 return result;
             }
@@ -76,7 +81,7 @@ namespace FileIndexer.Server
                 lineRange = lineRange.Truncate(MaxOutputLength);
                 suffix = "...";
             }
-            var @string = lineRange.IsEmpty ? string.Empty : _stringSource.ReadString(lineRange.Start, lineRange.End);
+            var @string = lineRange.IsEmpty ? string.Empty : _stringSource.ReadString(lineRange.Start, lineRange.End, StringSymbolsFilter.ReplaceControlCharWith('?'));
             return @string + suffix;
         }
     }
